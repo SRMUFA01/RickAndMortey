@@ -15,13 +15,40 @@ class MainViewController: UIViewController, Storyboardable {
         
         navigationItem.title = "Rick and Mortey"
         navigationController?.navigationBar.prefersLargeTitles = true
+        
         view.addSubview(tableView)
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
         tableView.dataSource = self
-        
         updateLayout(with: view.frame.size)
         
         addButton()
+        request { dataResponse, error in
+            dataResponse?.results.map({ (characterData) in
+                print(characterData.name)
+            })
+        }
+    }
+    
+    func request(completion: @escaping (DataResponse?, Error?) -> Void) {
+        let dataURL = "https://rickandmortyapi.com/api/character/"
+        guard let url = URL(string: dataURL) else { return }
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("error")
+                    completion(nil, error)
+                    return
+                }
+                guard let data = data else { return }
+                do {
+                    let characterData = try JSONDecoder().decode(DataResponse.self, from: data)
+                    completion(characterData, nil)
+                } catch let jsonError {
+                    print("Ошибка: ", jsonError)
+                    completion(nil, error)
+                }
+            }
+        }.resume()
     }
     
     private func addButton() {
@@ -30,11 +57,11 @@ class MainViewController: UIViewController, Storyboardable {
         
         let favouritesButton = UIButton(type: .system)
         favouritesButton.setTitle("★", for: .normal)
-        favouritesButton.setTitleColor(.yellow, for: .normal)
+        favouritesButton.setTitleColor(.black, for: .normal)
         favouritesButton.titleLabel?.font = UIFont.systemFont(ofSize: 32)
-        favouritesButton.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.8)
+        favouritesButton.backgroundColor = UIColor(red: 55/255, green: 220/255, blue: 100/255, alpha: 0.8)
         favouritesButton.layer.borderWidth = 2
-        favouritesButton.layer.borderColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1).cgColor
+        favouritesButton.layer.borderColor = UIColor(red: 20/255, green: 100/255, blue: 40/255, alpha: 1).cgColor
         favouritesButton.layer.cornerRadius = screenWidth * 0.2 / 2
         favouritesButton.layer.masksToBounds = true
         favouritesButton.clipsToBounds = true

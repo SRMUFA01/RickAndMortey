@@ -25,6 +25,9 @@ class MainViewController: UIViewController, Storyboardable {
     }
     
     private func addButton() {
+        let screenSize = UIScreen.main.bounds
+        let screenWidth = screenSize.width
+        
         let favouritesButton = UIButton(type: .system)
         favouritesButton.setTitle("★", for: .normal)
         favouritesButton.setTitleColor(.yellow, for: .normal)
@@ -32,12 +35,14 @@ class MainViewController: UIViewController, Storyboardable {
         favouritesButton.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.8)
         favouritesButton.layer.borderWidth = 2
         favouritesButton.layer.borderColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1).cgColor
-        favouritesButton.layer.cornerRadius = 25
+        favouritesButton.layer.cornerRadius = screenWidth * 0.2 / 2
+        favouritesButton.layer.masksToBounds = true
+        favouritesButton.clipsToBounds = true
         view.addSubview(favouritesButton)
         favouritesButton.snp.makeConstraints { maker in
             maker.left.equalToSuperview().inset(25)
-            maker.width.equalTo(75)
-            maker.height.equalTo(75)
+            maker.width.equalTo(screenWidth * 0.2)
+            maker.height.equalTo(screenWidth * 0.2)
             maker.bottom.equalToSuperview().inset(25)
         }
     }

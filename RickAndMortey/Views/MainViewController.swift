@@ -5,6 +5,7 @@ class MainViewController: UIViewController, Storyboardable {
     
     var viewModel: MainViewModel?
     var coordinator: AppCoordinator?
+    let networkService = NetworkService()
     
     let tableView = UITableView.init(frame: CGRect.zero, style: .grouped)
     
@@ -22,33 +23,17 @@ class MainViewController: UIViewController, Storyboardable {
         updateLayout(with: view.frame.size)
         
         addButton()
-        request { dataResponse, error in
-            dataResponse?.results.map({ (characterData) in
-                print(characterData.name)
-            })
-        }
-    }
-    
-    func request(completion: @escaping (DataResponse?, Error?) -> Void) {
-        let dataURL = "https://rickandmortyapi.com/api/character/"
-        guard let url = URL(string: dataURL) else { return }
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            DispatchQueue.main.async {
-                if let error = error {
-                    print("error")
-                    completion(nil, error)
-                    return
+
+        networkService.request { (result) in
+            switch result {
+            case .success(let dataResponse):
+                dataResponse.results.map { (characterData) in
+                    print("Имя:", characterData.name)
                 }
-                guard let data = data else { return }
-                do {
-                    let characterData = try JSONDecoder().decode(DataResponse.self, from: data)
-                    completion(characterData, nil)
-                } catch let jsonError {
-                    print("Ошибка: ", jsonError)
-                    completion(nil, error)
-                }
+            case .failure(let error):
+                print("error:", error)
             }
-        }.resume()
+        }
     }
     
     private func addButton() {

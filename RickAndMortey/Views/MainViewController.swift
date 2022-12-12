@@ -6,32 +6,63 @@ class MainViewController: UIViewController, Storyboardable {
     var viewModel: MainViewModel?
     var coordinator: AppCoordinator?
     
+    let tableView = UITableView.init(frame: CGRect.zero, style: .grouped)
+    
+    var data = ["Рик", "Морти", "Кто-то еще", "Рик", "Морти", "Кто-то еще", "Рик", "Морти", "Кто-то еще", "Рик", "Морти", "Кто-то еще", "Рик", "Морти", "Кто-то еще", "Рик", "Морти", "Кто-то еще"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        initializate()
-    }
-    
-    func initializate() {
-        let screenSize = UIScreen.main.bounds
-        let screenWidth = screenSize.width
-        let screenHeight = screenSize.height
         
-        let btn = UIButton()
-        btn.setTitle("LOG IN →", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
-        btn.backgroundColor = UIColor(red: 84/255, green: 180/255, blue: 160/255, alpha: 1)
-        btn.layer.cornerRadius = 20
-        view.addSubview(btn)
-        btn.snp.makeConstraints { maker in
-            maker.centerX.equalToSuperview()
-            maker.width.equalTo(screenWidth * 0.350)
-            maker.height.equalTo(screenHeight * 0.075)
-            maker.bottom.equalToSuperview().inset(100)
-        }
-        btn.addTarget(self, action: #selector(btnPressed), for: .touchUpInside)
+        navigationItem.title = "Rick and Mortey"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        view.addSubview(tableView)
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
+        tableView.dataSource = self
+        
+        updateLayout(with: view.frame.size)
+        
+        addButton()
     }
     
-    @objc private func btnPressed() {
-        coordinator?.showInfo()
+    private func addButton() {
+        let favouritesButton = UIButton(type: .system)
+        favouritesButton.setTitle("★", for: .normal)
+        favouritesButton.setTitleColor(.yellow, for: .normal)
+        favouritesButton.titleLabel?.font = UIFont.systemFont(ofSize: 32)
+        favouritesButton.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.8)
+        favouritesButton.layer.borderWidth = 2
+        favouritesButton.layer.borderColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1).cgColor
+        favouritesButton.layer.cornerRadius = 25
+        view.addSubview(favouritesButton)
+        favouritesButton.snp.makeConstraints { maker in
+            maker.left.equalToSuperview().inset(25)
+            maker.width.equalTo(75)
+            maker.height.equalTo(75)
+            maker.bottom.equalToSuperview().inset(25)
+        }
+    }
+    
+    private func updateLayout(with size: CGSize) {
+        tableView.frame = CGRect.init(origin: .zero, size: size)
+    }
+   
+}
+
+extension MainViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch tableView {
+        case self.tableView:
+            return self.data.count
+        default:
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
+        cell.textLabel?.text = data[indexPath.row]
+        //cell.imageView?.image = UIImage(named: "nameOfImage")
+        cell.accessoryType = .disclosureIndicator
+        return cell
     }
 }

@@ -3,9 +3,10 @@ import SnapKit
 
 class MainViewController: UIViewController, Storyboardable {
     
+    let networkService = NetworkService()
     var viewModel: MainViewModel?
     var coordinator: AppCoordinator?
-    let networkService = NetworkService()
+    var dataResponse: DataResponse? = nil
     
     let tableView = UITableView.init(frame: CGRect.zero, style: .grouped)
     
@@ -24,11 +25,12 @@ class MainViewController: UIViewController, Storyboardable {
         
         addButton()
 
-        networkService.request { (result) in
+        networkService.request { [weak self] (result) in
             switch result {
             case .success(let dataResponse):
                 dataResponse.results.map { (characterData) in
-                    print("Имя:", characterData.name)
+                    self?.dataResponse = dataResponse
+                    self?.tableView.reloadData()
                 }
             case .failure(let error):
                 print("error:", error)
@@ -69,7 +71,7 @@ extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch tableView {
         case self.tableView:
-            return self.data.count
+            return self.dataResponse?.results.count ?? 0
         default:
             return 0
         }
@@ -77,7 +79,8 @@ extension MainViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
-        cell.textLabel?.text = data[indexPath.row]
+        let name = dataResponse?.results[indexPath.row]
+        cell.textLabel?.text = name?.name
         //cell.imageView?.image = UIImage(named: "nameOfImage")
         cell.accessoryType = .disclosureIndicator
         return cell

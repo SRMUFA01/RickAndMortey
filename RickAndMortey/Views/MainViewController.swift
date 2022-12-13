@@ -7,7 +7,6 @@ class MainViewController: UIViewController, Storyboardable {
     var viewModel: MainViewModel?
     var coordinator: AppCoordinator?
     var dataResponse: DataResponse? = nil
-    var connection = Connection()
     
     let charURL = "https://rickandmortyapi.com/api/character/"
     
@@ -21,19 +20,7 @@ class MainViewController: UIViewController, Storyboardable {
         
         addButton()
         
-        connection.connect(URL: charURL)
-        // MARK: network
-        networkService.request(dataURL: charURL) { [weak self] (result) in
-            switch result {
-            case .success(let dataResponse):
-                dataResponse.results.map { (characterData) in
-                    self?.dataResponse = dataResponse
-                    self?.tableView.reloadData()
-                }
-            case .failure(let error):
-                print("error:", error)
-            }
-        }
+        networkRequest()
     }
     
     func setupSearchBar() {
@@ -77,6 +64,20 @@ class MainViewController: UIViewController, Storyboardable {
             maker.width.equalTo(screenWidth * 0.2)
             maker.height.equalTo(screenWidth * 0.2)
             maker.bottom.equalToSuperview().inset(25)
+        }
+    }
+    
+    func networkRequest() {
+        networkService.request(dataURL: charURL) { [weak self] (result) in
+            switch result {
+            case .success(let dataResponse):
+                dataResponse.results.map { (characterData) in
+                    self?.dataResponse = dataResponse
+                    self?.tableView.reloadData()
+                }
+            case .failure(let error):
+                print("error:", error)
+            }
         }
     }
 }

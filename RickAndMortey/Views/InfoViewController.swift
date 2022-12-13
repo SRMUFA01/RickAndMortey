@@ -26,33 +26,19 @@ class InfoViewController: UIViewController, Storyboardable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        id = viewModel?.id ?? 0
+        initializate()
         
-
-        connect()
+        id = viewModel?.id ?? 0
         
         let data = dataResponse?.results[id - 1]
         
         print(dataResponse?.results[id - 1].name)
         print(data?.gender)
         add()
-        initializate()
         
-    }
-    
-    
-    // MARK: network
-    func connect() {
-        networkService.request(dataURL: charURL) { [weak self] (result) in
-            switch result {
-            case .success(let dataResponse):
-                dataResponse.results.map { (characterData) in
-                    self?.dataResponse = dataResponse
-                }
-            case .failure(let error):
-                print("error:", error)
-            }
-        }
+        
+        networkRequest()
+        
     }
     
     func initializate() {
@@ -154,5 +140,18 @@ class InfoViewController: UIViewController, Storyboardable {
     private func add() {
         personNameLabel.text = dataResponse?.results[id - 1].name
         personStatusLabel.text = dataResponse?.results[id - 1].status
+    }
+    
+    func networkRequest() {
+        networkService.request(dataURL: charURL) { [weak self] (result) in
+            switch result {
+            case .success(let dataResponse):
+                dataResponse.results.map { (characterData) in
+                    self?.dataResponse = dataResponse
+                }
+            case .failure(let error):
+                print("error:", error)
+            }
+        }
     }
 }

@@ -1,8 +1,7 @@
 import Foundation
 
 class NetworkService {
-    func request(completion: @escaping (Result<DataResponse, Error>) -> Void) {
-        let dataURL = "https://rickandmortyapi.com/api/character/"
+    func request(dataURL: String, completion: @escaping (Result<DataResponse, Error>) -> Void) {
         guard let url = URL(string: dataURL) else { return }
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             DispatchQueue.main.async {

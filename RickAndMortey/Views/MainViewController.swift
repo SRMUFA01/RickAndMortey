@@ -7,25 +7,23 @@ class MainViewController: UIViewController, Storyboardable {
     var viewModel: MainViewModel?
     var coordinator: AppCoordinator?
     var dataResponse: DataResponse? = nil
+    var connection = Connection()
+    
+    let charURL = "https://rickandmortyapi.com/api/character/"
     
     let tableView = UITableView.init(frame: CGRect.zero, style: .grouped)
-    
-    var data = ["Рик", "Морти", "Кто-то еще", "Рик", "Морти", "Кто-то еще", "Рик", "Морти", "Кто-то еще", "Рик", "Морти", "Кто-то еще", "Рик", "Морти", "Кто-то еще", "Рик", "Морти", "Кто-то еще"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Rick and Mortey"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        
-        view.addSubview(tableView)
-        tableView.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
-        tableView.dataSource = self
-        updateLayout(with: view.frame.size)
+        setupSearchBar()
+        setupTableView()
         
         addButton()
-
-        networkService.request { [weak self] (result) in
+        
+        connection.connect(URL: charURL)
+        // MARK: network
+        networkService.request(dataURL: charURL) { [weak self] (result) in
             switch result {
             case .success(let dataResponse):
                 dataResponse.results.map { (characterData) in
@@ -36,6 +34,27 @@ class MainViewController: UIViewController, Storyboardable {
                 print("error:", error)
             }
         }
+    }
+    
+    func setupSearchBar() {
+        let searchController = UISearchController(searchResultsController: nil)
+        navigationItem.searchController = searchController
+        searchController.searchBar.delegate = self
+    }
+    
+    func setupTableView() {
+        navigationItem.title = "Rick and Mortey"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        view.addSubview(tableView)
+        tableView.delegate = self
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
+        tableView.dataSource = self
+        updateLayout(with: view.frame.size)
+    }
+    
+    private func updateLayout(with size: CGSize) {
+        tableView.frame = CGRect.init(origin: .zero, size: size)
     }
     
     private func addButton() {
@@ -60,14 +79,9 @@ class MainViewController: UIViewController, Storyboardable {
             maker.bottom.equalToSuperview().inset(25)
         }
     }
-    
-    private func updateLayout(with size: CGSize) {
-        tableView.frame = CGRect.init(origin: .zero, size: size)
-    }
-   
 }
 
-extension MainViewController: UITableViewDataSource {
+extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch tableView {
         case self.tableView:
@@ -79,10 +93,37 @@ extension MainViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
-        let name = dataResponse?.results[indexPath.row]
-        cell.textLabel?.text = name?.name
-        //cell.imageView?.image = UIImage(named: "nameOfImage")
+        let data = dataResponse?.results[indexPath.row]
+        cell.textLabel?.text = data?.name
+        //cell.imageView?.image = UIImage(data: data?.image)
         cell.accessoryType = .disclosureIndicator
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let data = dataResponse?.results[indexPath.row]
+        let id = data?.id
+        coordinator?.id = viewModel!.newid.value
+        coordinator?.showInfo(id: id ?? 0)
+    }
+}
+
+extension MainViewController : UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        let dataURL = "https://rickandmortyapi.com/api/character/?name=\(searchText)"
+        
+        //connection.connect(URL: dataURL)
+        // MARK: network
+        networkService.request(dataURL: dataURL) { [weak self] (result) in
+            switch result {
+            case .success(let dataResponse):
+                dataResponse.results.map { (characterData) in
+                    self?.dataResponse = dataResponse
+                    self?.tableView.reloadData()
+                }
+            case .failure(let error):
+                print("error:", error)
+            }
+        }
     }
 }

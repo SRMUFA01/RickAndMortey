@@ -2,6 +2,7 @@ import UIKit
 
 class AppCoordinator : Coordinator {
     var navigationController: UINavigationController
+    var id = 0
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -19,9 +20,10 @@ class AppCoordinator : Coordinator {
         navigationController.pushViewController(vc, animated: true)
     }
     
-    func showInfo() {
+    func showInfo(id: Int) {
         let vc = InfoViewController.createObject()
         let viewModel = InfoViewModel()
+        viewModel.id = id
         vc.coordinator = self
         vc.viewModel = viewModel
         navigationController.pushViewController(vc, animated: true)

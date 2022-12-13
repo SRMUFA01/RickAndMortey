@@ -14,7 +14,6 @@ class InfoViewController: UIViewController, Storyboardable {
     var image = ""
     
     let titleLabel = UILabel()
-    
     let nameLabel = UILabel()
     let personNameLabel = UILabel()
     let statusLabel = UILabel()
@@ -44,7 +43,7 @@ class InfoViewController: UIViewController, Storyboardable {
         let screenHeight = screenSize.height
         
         titleLabel.text = "Информация о персонаже"
-        titleLabel.font = UIFont(name: "Avenir-Heavy", size: 18)
+        titleLabel.font = UIFont(name: "Avenir-Heavy", size: 24)
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { maker in
             maker.top.equalToSuperview().inset(125)
@@ -52,7 +51,7 @@ class InfoViewController: UIViewController, Storyboardable {
         }
         
         nameLabel.text = "Имя:"
-        nameLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
+        nameLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         view.addSubview(nameLabel)
         nameLabel.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel).inset(100)
@@ -60,15 +59,16 @@ class InfoViewController: UIViewController, Storyboardable {
         }
         
         personNameLabel.text = name
-        personNameLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
+        personNameLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
+        personNameLabel.textColor = .darkGray
         view.addSubview(personNameLabel)
         personNameLabel.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel).inset(100)
-            maker.left.equalTo(nameLabel).inset(screenWidth / 3)
+            maker.left.equalTo(nameLabel).inset(screenWidth / 2.25)
         }
         
         statusLabel.text = "Статус:"
-        statusLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
+        statusLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         view.addSubview(statusLabel)
         statusLabel.snp.makeConstraints { maker in
             maker.top.equalTo(nameLabel).inset(50)
@@ -76,15 +76,16 @@ class InfoViewController: UIViewController, Storyboardable {
         }
         
         personStatusLabel.text = status
-        personStatusLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
+        personStatusLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
+        personStatusLabel.textColor = .darkGray
         view.addSubview(personStatusLabel)
         personStatusLabel.snp.makeConstraints { maker in
             maker.top.equalTo(nameLabel).inset(50)
-            maker.left.equalTo(statusLabel).inset(screenWidth / 3)
+            maker.left.equalTo(statusLabel).inset(screenWidth / 2.25)
         }
         
         speciesLabel.text = "Вид персонажа:"
-        speciesLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
+        speciesLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         view.addSubview(speciesLabel)
         speciesLabel.snp.makeConstraints { maker in
             maker.top.equalTo(statusLabel).inset(50)
@@ -92,15 +93,16 @@ class InfoViewController: UIViewController, Storyboardable {
         }
         
         personSpeciesLabel.text = species
-        personSpeciesLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
+        personSpeciesLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
+        personSpeciesLabel.textColor = .darkGray
         view.addSubview(personSpeciesLabel)
         personSpeciesLabel.snp.makeConstraints { maker in
             maker.top.equalTo(statusLabel).inset(50)
-            maker.left.equalTo(speciesLabel).inset(screenWidth / 3)
+            maker.left.equalTo(speciesLabel).inset(screenWidth / 2.25)
         }
         
         genderLabel.text = "Пол:"
-        genderLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
+        genderLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         view.addSubview(genderLabel)
         genderLabel.snp.makeConstraints { maker in
             maker.top.equalTo(speciesLabel).inset(50)
@@ -108,29 +110,30 @@ class InfoViewController: UIViewController, Storyboardable {
         }
         
         personGenderLabel.text = gender
-        personGenderLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
+        personGenderLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
+        personGenderLabel.textColor = .darkGray
         view.addSubview(personGenderLabel)
         personGenderLabel.snp.makeConstraints { maker in
             maker.top.equalTo(speciesLabel).inset(50)
-            maker.left.equalTo(genderLabel).inset(screenWidth / 3)
+            maker.left.equalTo(genderLabel).inset(screenWidth / 2.25)
         }
         
-        let btn = UIButton(type: .system)
-        btn.setTitle("Добавить в избранное", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
-        btn.backgroundColor = UIColor(red: 84/255, green: 118/255, blue: 171/255, alpha: 1)
-        btn.layer.cornerRadius = 20
-        view.addSubview(btn)
-        btn.snp.makeConstraints { maker in
+        let addToFavouritesButton = UIButton(type: .system)
+        addToFavouritesButton.setTitle("Добавить в избранное", for: .normal)
+        addToFavouritesButton.setTitleColor(.white, for: .normal)
+        addToFavouritesButton.backgroundColor = UIColor(red: 84/255, green: 118/255, blue: 171/255, alpha: 1)
+        addToFavouritesButton.layer.cornerRadius = 20
+        view.addSubview(addToFavouritesButton)
+        addToFavouritesButton.snp.makeConstraints { maker in
             maker.centerX.equalToSuperview()
             maker.width.equalTo(screenWidth * 0.6)
             maker.height.equalTo(screenHeight * 0.075)
             maker.bottom.equalToSuperview().inset(100)
         }
-        btn.addTarget(self, action: #selector(btnPressed), for: .touchUpInside)
+        addToFavouritesButton.addTarget(self, action: #selector(addToFavouritesButtonPressed), for: .touchUpInside)
     }
     
-    @objc private func btnPressed() {
+    @objc private func addToFavouritesButtonPressed() {
         
     }
 }

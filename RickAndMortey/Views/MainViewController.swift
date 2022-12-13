@@ -104,8 +104,18 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let data = dataResponse?.results[indexPath.row]
         let id = data?.id
-        coordinator?.id = viewModel!.newid.value
-        coordinator?.showInfo(id: id ?? 0)
+        let name = data?.name
+        let status = data?.status
+        let species = data?.species
+        let gender = data?.gender
+        let image = data?.image
+        coordinator?.id = viewModel?.id.value ?? 0
+        coordinator?.name = viewModel?.name.value ?? ""
+        coordinator?.status = viewModel?.status.value ?? ""
+        coordinator?.species = viewModel?.species.value ?? ""
+        coordinator?.gender = viewModel?.gender.value ?? ""
+        coordinator?.image = viewModel?.image.value ?? ""
+        coordinator?.showInfo(id: id ?? 0, name: name ?? "", status: status ?? "", species: species ?? "", gender: gender ?? "", image: image ?? "")
     }
 }
 
@@ -113,7 +123,6 @@ extension MainViewController : UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         let dataURL = "https://rickandmortyapi.com/api/character/?name=\(searchText)"
         
-        //connection.connect(URL: dataURL)
         // MARK: network
         networkService.request(dataURL: dataURL) { [weak self] (result) in
             switch result {

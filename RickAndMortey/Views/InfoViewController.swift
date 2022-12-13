@@ -3,14 +3,15 @@ import SnapKit
 
 class InfoViewController: UIViewController, Storyboardable {
     
-    let networkService = NetworkService()
     var viewModel: InfoViewModel?
     var coordinator: AppCoordinator?
-    var dataResponse: DataResponse? = nil
-    
-    let charURL = "https://rickandmortyapi.com/api/character/"
     
     var id = 0
+    var name = ""
+    var status = ""
+    var species = ""
+    var gender = ""
+    var image = ""
     
     let titleLabel = UILabel()
     
@@ -26,19 +27,15 @@ class InfoViewController: UIViewController, Storyboardable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        initializate()
-        
         id = viewModel?.id ?? 0
+        name = viewModel?.name ?? ""
+        status = viewModel?.status ?? ""
+        species = viewModel?.species ?? ""
+        gender = viewModel?.gender ?? ""
+        image = viewModel?.image ?? ""
         
-        let data = dataResponse?.results[id - 1]
-        
-        print(dataResponse?.results[id - 1].name)
-        print(data?.gender)
-        add()
-        
-        
-        networkRequest()
-        
+        print(image)
+        initializate()
     }
     
     func initializate() {
@@ -62,7 +59,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalToSuperview().inset(30)
         }
         
-        personNameLabel.text = dataResponse?.results[id - 1].name
+        personNameLabel.text = name
         personNameLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
         view.addSubview(personNameLabel)
         personNameLabel.snp.makeConstraints { maker in
@@ -78,7 +75,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalToSuperview().inset(30)
         }
         
-        personStatusLabel.text = ""
+        personStatusLabel.text = status
         personStatusLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
         view.addSubview(personStatusLabel)
         personStatusLabel.snp.makeConstraints { maker in
@@ -94,7 +91,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalToSuperview().inset(30)
         }
         
-        personSpeciesLabel.text = "bvz"
+        personSpeciesLabel.text = species
         personSpeciesLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
         view.addSubview(personSpeciesLabel)
         personSpeciesLabel.snp.makeConstraints { maker in
@@ -110,7 +107,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalToSuperview().inset(30)
         }
         
-        personGenderLabel.text = "bvz"
+        personGenderLabel.text = gender
         personGenderLabel.font = UIFont.systemFont(ofSize: screenWidth/25)
         view.addSubview(personGenderLabel)
         personGenderLabel.snp.makeConstraints { maker in
@@ -134,24 +131,6 @@ class InfoViewController: UIViewController, Storyboardable {
     }
     
     @objc private func btnPressed() {
-        add()
-    }
-    
-    private func add() {
-        personNameLabel.text = dataResponse?.results[id - 1].name
-        personStatusLabel.text = dataResponse?.results[id - 1].status
-    }
-    
-    func networkRequest() {
-        networkService.request(dataURL: charURL) { [weak self] (result) in
-            switch result {
-            case .success(let dataResponse):
-                dataResponse.results.map { (characterData) in
-                    self?.dataResponse = dataResponse
-                }
-            case .failure(let error):
-                print("error:", error)
-            }
-        }
+        
     }
 }

@@ -96,7 +96,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
         let data = dataResponse?.results[indexPath.row]
         cell.textLabel?.text = data?.name
-        //cell.imageView?.image = UIImage(data: data?.image)
+//        cell.imageView?.image = UIImage(data: data?.image)
         cell.accessoryType = .disclosureIndicator
         return cell
     }

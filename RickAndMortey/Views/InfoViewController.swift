@@ -13,16 +13,6 @@ class InfoViewController: UIViewController, Storyboardable {
     var gender = ""
     var image = ""
     
-    let titleLabel = UILabel()
-    let nameLabel = UILabel()
-    let personNameLabel = UILabel()
-    let statusLabel = UILabel()
-    let personStatusLabel = UILabel()
-    let speciesLabel = UILabel()
-    let personSpeciesLabel = UILabel()
-    let genderLabel = UILabel()
-    let personGenderLabel = UILabel()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -42,6 +32,7 @@ class InfoViewController: UIViewController, Storyboardable {
         let screenWidth = screenSize.width
         let screenHeight = screenSize.height
         
+        let titleLabel = UILabel()
         titleLabel.text = "Информация о персонаже"
         titleLabel.font = UIFont(name: "Avenir-Heavy", size: 24)
         view.addSubview(titleLabel)
@@ -50,6 +41,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.centerX.equalToSuperview()
         }
         
+        let nameLabel = UILabel()
         nameLabel.text = "Имя:"
         nameLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         view.addSubview(nameLabel)
@@ -58,6 +50,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalToSuperview().inset(30)
         }
         
+        let personNameLabel = UILabel()
         personNameLabel.text = name
         personNameLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         personNameLabel.textColor = .darkGray
@@ -67,6 +60,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalTo(nameLabel).inset(screenWidth / 2.25)
         }
         
+        let statusLabel = UILabel()
         statusLabel.text = "Статус:"
         statusLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         view.addSubview(statusLabel)
@@ -75,6 +69,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalToSuperview().inset(30)
         }
         
+        let personStatusLabel = UILabel()
         personStatusLabel.text = status
         personStatusLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         personStatusLabel.textColor = .darkGray
@@ -84,6 +79,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalTo(statusLabel).inset(screenWidth / 2.25)
         }
         
+        let speciesLabel = UILabel()
         speciesLabel.text = "Вид персонажа:"
         speciesLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         view.addSubview(speciesLabel)
@@ -92,6 +88,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalToSuperview().inset(30)
         }
         
+        let personSpeciesLabel = UILabel()
         personSpeciesLabel.text = species
         personSpeciesLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         personSpeciesLabel.textColor = .darkGray
@@ -101,6 +98,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalTo(speciesLabel).inset(screenWidth / 2.25)
         }
         
+        let genderLabel = UILabel()
         genderLabel.text = "Пол:"
         genderLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         view.addSubview(genderLabel)
@@ -109,6 +107,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.left.equalToSuperview().inset(30)
         }
         
+        let personGenderLabel = UILabel()
         personGenderLabel.text = gender
         personGenderLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         personGenderLabel.textColor = .darkGray

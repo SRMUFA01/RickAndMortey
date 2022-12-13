@@ -37,7 +37,7 @@ class InfoViewController: UIViewController, Storyboardable {
         titleLabel.font = UIFont(name: "Avenir-Heavy", size: 24)
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { maker in
-            maker.top.equalToSuperview().inset(125)
+            maker.top.equalToSuperview().inset(75)
             maker.centerX.equalToSuperview()
         }
         
@@ -46,7 +46,7 @@ class InfoViewController: UIViewController, Storyboardable {
         nameLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         view.addSubview(nameLabel)
         nameLabel.snp.makeConstraints { maker in
-            maker.top.equalTo(titleLabel).inset(100)
+            maker.top.equalTo(titleLabel).inset(75)
             maker.left.equalToSuperview().inset(30)
         }
         
@@ -56,8 +56,8 @@ class InfoViewController: UIViewController, Storyboardable {
         personNameLabel.textColor = .darkGray
         view.addSubview(personNameLabel)
         personNameLabel.snp.makeConstraints { maker in
-            maker.top.equalTo(titleLabel).inset(100)
-            maker.left.equalTo(nameLabel).inset(screenWidth / 2.25)
+            maker.top.equalTo(titleLabel).inset(75)
+            maker.left.equalTo(nameLabel).inset(screenWidth / 3.5)
         }
         
         let statusLabel = UILabel()
@@ -76,11 +76,11 @@ class InfoViewController: UIViewController, Storyboardable {
         view.addSubview(personStatusLabel)
         personStatusLabel.snp.makeConstraints { maker in
             maker.top.equalTo(nameLabel).inset(50)
-            maker.left.equalTo(statusLabel).inset(screenWidth / 2.25)
+            maker.left.equalTo(statusLabel).inset(screenWidth / 3.5)
         }
         
         let speciesLabel = UILabel()
-        speciesLabel.text = "Вид персонажа:"
+        speciesLabel.text = "Вид:"
         speciesLabel.font = UIFont.systemFont(ofSize: screenWidth/20)
         view.addSubview(speciesLabel)
         speciesLabel.snp.makeConstraints { maker in
@@ -95,7 +95,7 @@ class InfoViewController: UIViewController, Storyboardable {
         view.addSubview(personSpeciesLabel)
         personSpeciesLabel.snp.makeConstraints { maker in
             maker.top.equalTo(statusLabel).inset(50)
-            maker.left.equalTo(speciesLabel).inset(screenWidth / 2.25)
+            maker.left.equalTo(speciesLabel).inset(screenWidth / 3.5)
         }
         
         let genderLabel = UILabel()
@@ -114,7 +114,20 @@ class InfoViewController: UIViewController, Storyboardable {
         view.addSubview(personGenderLabel)
         personGenderLabel.snp.makeConstraints { maker in
             maker.top.equalTo(speciesLabel).inset(50)
-            maker.left.equalTo(genderLabel).inset(screenWidth / 2.25)
+            maker.left.equalTo(genderLabel).inset(screenWidth / 3.5)
+        }
+        
+        let personImage = UIImageView()
+        let url = URL(string: image)
+        if let data = try? Data(contentsOf: url!)
+        {
+            personImage.image = UIImage(data: data)
+        }
+        view.addSubview(personImage)
+        personImage.snp.makeConstraints { maker in
+            maker.top.equalTo(genderLabel).inset(50)
+            maker.centerX.equalToSuperview().inset(30)
+            maker.width.height.equalTo(screenWidth / 2)
         }
         
         let addToFavouritesButton = UIButton(type: .system)
@@ -127,7 +140,7 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.centerX.equalToSuperview()
             maker.width.equalTo(screenWidth * 0.6)
             maker.height.equalTo(screenHeight * 0.075)
-            maker.bottom.equalToSuperview().inset(100)
+            maker.bottom.equalToSuperview().inset(30)
         }
         addToFavouritesButton.addTarget(self, action: #selector(addToFavouritesButtonPressed), for: .touchUpInside)
     }

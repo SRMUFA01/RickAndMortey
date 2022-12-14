@@ -6,7 +6,6 @@ class NetworkService {
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             DispatchQueue.main.async {
                 if let error = error {
-                    print("error")
                     completion(.failure(error))
                     return
                 }
@@ -15,7 +14,6 @@ class NetworkService {
                     let characterData = try JSONDecoder().decode(DataResponse.self, from: data)
                     completion(.success(characterData))
                 } catch let jsonError {
-                    print("Ошибка:", jsonError)
                     completion(.failure(jsonError))
                 }
             }

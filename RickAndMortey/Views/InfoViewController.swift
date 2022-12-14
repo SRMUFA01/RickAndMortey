@@ -3,6 +3,7 @@ import SnapKit
 import RealmSwift
 
 class InfoViewController: UIViewController, Storyboardable {
+    let realm = try! Realm()
     
     var viewModel: InfoViewModel?
     var coordinator: AppCoordinator?
@@ -14,9 +15,11 @@ class InfoViewController: UIViewController, Storyboardable {
     var gender = ""
     var image = ""
     
+    let addToFavouritesButton = UIButton(type: .system)
+    var isFavourite = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //var favouriteCharacters = [String]()
         id = viewModel?.id ?? 0
         name = viewModel?.name ?? ""
         status = viewModel?.status ?? ""
@@ -37,7 +40,7 @@ class InfoViewController: UIViewController, Storyboardable {
         titleLabel.font = UIFont(name: "Avenir-Heavy", size: 24)
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { maker in
-            maker.top.equalToSuperview().inset(75)
+            maker.top.equalToSuperview().inset(85)
             maker.centerX.equalToSuperview()
         }
         
@@ -130,7 +133,6 @@ class InfoViewController: UIViewController, Storyboardable {
             maker.width.height.equalTo(screenWidth / 2)
         }
         
-        let addToFavouritesButton = UIButton(type: .system)
         addToFavouritesButton.setTitle("Добавить в избранное", for: .normal)
         addToFavouritesButton.setTitleColor(.white, for: .normal)
         addToFavouritesButton.backgroundColor = UIColor(red: 84/255, green: 118/255, blue: 171/255, alpha: 1)
@@ -146,6 +148,13 @@ class InfoViewController: UIViewController, Storyboardable {
     }
     
     @objc private func addToFavouritesButtonPressed() {
-        
+        isFavourite = true
+        let favouriteID = FavouriteCharacters(value: [String(id)])
+        try! realm.write {
+            realm.add([favouriteID])
+        }
+        addToFavouritesButton.setTitle("В избранном", for: .normal)
+        addToFavouritesButton.backgroundColor = UIColor(red: 85/255, green: 200/255, blue: 85/255, alpha: 1)
+        addToFavouritesButton.isEnabled = false
     }
 }

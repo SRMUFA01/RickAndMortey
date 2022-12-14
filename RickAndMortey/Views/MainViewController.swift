@@ -1,14 +1,16 @@
 import UIKit
 import SnapKit
+import RealmSwift
 
 class MainViewController: UIViewController, Storyboardable {
+    let realm = try! Realm()
     
     let networkService = NetworkService()
     var viewModel: MainViewModel?
     var coordinator: AppCoordinator?
     var dataResponse: DataResponse? = nil
     var charResponse: CharacterData? = nil
-    var favouriteCharacters = [CharacterData?]()
+    var favouriteCharactersData = [CharacterData?]()
     var timer: Timer?
     var favouritesButton = UIBarButtonItem()
     
@@ -17,29 +19,45 @@ class MainViewController: UIViewController, Storyboardable {
     let tableView = UITableView.init(frame: CGRect.zero, style: .grouped)
     
     var isFavourite = false
-    let favouritesArray = [621, 154, 124, 221, 12, 1]
+    var favouritesArray = [""]
+    var iArray = [Int()]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        updateFavourites()
         setupFavouritesButton()
         setupSearchBar()
         setupTableView()
-        
         makeRequest()
         networkRequest(url: charURL)
     }
-                    
+    
+    func updateFavourites() {
+        let favouriteObjects = realm.objects(FavouriteCharacters.self)
+        if favouriteObjects.count != 0 {
+            for i in 1..<(favouriteObjects.count) {
+                if favouritesArray.contains(realm.objects(FavouriteCharacters.self)[i].id) { }
+                else { favouritesArray.append(realm.objects(FavouriteCharacters.self)[i].id) }
+            }
+        }
+    }
+    
     func makeRequest() {
+        updateFavourites()
         
-        for i in 0..<(favouritesArray.count) {
-            if favouriteCharacters.count < favouritesArray.count {
-                var favouritesURL = "https://rickandmortyapi.com/api/character/\(favouritesArray[i])"
-                var request = URLRequest(url: URL(string: favouritesURL)!)
+        for i in 1..<(favouritesArray.count) {
+            if iArray.contains(i) { }
+            else {
+                let favouritesURL = "https://rickandmortyapi.com/api/character/\(favouritesArray[i])"
+                
+                let request = URLRequest(url: URL(string: favouritesURL)!)
                 let task = URLSession.shared.dataTask(with: request) { data, response, error in
                     if let data = data, let charData = try? JSONDecoder().decode(CharacterData.self, from: data) {
-                        self.favouriteCharacters.append(charData)
+                        self.favouriteCharactersData.append(charData)
+                        self.tableView.reloadData()
                     }
+                    self.iArray.append(i)
                 }
                 task.resume()
             }
@@ -55,7 +73,7 @@ class MainViewController: UIViewController, Storyboardable {
     @objc func isFavouritesButtonPressed() {
         if isFavourite {
             isFavourite = false
-            navigationItem.title = "Rick and Mortey"
+            navigationItem.title = "Rick and Morty"
             networkRequest(url: charURL)
         } else {
             isFavourite = true
@@ -71,7 +89,7 @@ class MainViewController: UIViewController, Storyboardable {
     }
     
     func setupTableView() {
-        navigationItem.title = "Rick and Mortey"
+        navigationItem.title = "Rick and Morty"
         navigationController?.navigationBar.prefersLargeTitles = true
         
         view.addSubview(tableView)
@@ -84,7 +102,7 @@ class MainViewController: UIViewController, Storyboardable {
     private func updateLayout(with size: CGSize) {
         tableView.frame = CGRect.init(origin: .zero, size: size)
     }
-        
+    
     func networkRequest(url: String) {
         networkService.request(dataURL: url) { [weak self] (result) in
             switch result {
@@ -93,8 +111,8 @@ class MainViewController: UIViewController, Storyboardable {
                     self?.dataResponse = dataResponse
                     self?.tableView.reloadData()
                 }
-            case .failure(let error):
-                print("error:", error)
+            case .failure(_):
+                print("error:")
             }
         }
     }
@@ -105,11 +123,10 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         switch tableView {
         case self.tableView:
             if isFavourite {
-                return self.favouriteCharacters.count
+                return self.favouriteCharactersData.count
             } else {
                 return self.dataResponse?.results.count ?? 0
             }
-            
         default:
             return 0
         }
@@ -118,7 +135,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
         if isFavourite {
-            let data = favouriteCharacters[indexPath.row]
+            let data = favouriteCharactersData[indexPath.row]
             cell.textLabel?.text = data?.name
             let url = URL(string: data?.image ?? "")
             if let data = try? Data(contentsOf: url!)
@@ -149,7 +166,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         var image =  String()
         
         if isFavourite {
-            let data = favouriteCharacters[indexPath.row]
+            let data = favouriteCharactersData[indexPath.row]
             id = data?.id ?? 0
             name = data?.name ?? ""
             status = data?.status ?? ""

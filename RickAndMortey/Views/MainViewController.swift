@@ -8,20 +8,55 @@ class MainViewController: UIViewController, Storyboardable {
     var coordinator: AppCoordinator?
     var dataResponse: DataResponse? = nil
     var timer: Timer?
+    var favouritesButton = UIBarButtonItem()
     
     let charURL = "https://rickandmortyapi.com/api/character/"
-    
+    var favouritesURL = ""
     let tableView = UITableView.init(frame: CGRect.zero, style: .grouped)
+    
+    var isFavourite = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let favouritesArray = [23, 12, 14]
+        var favourites = ""
+        for i in favouritesArray {
+            favourites += String(i)
+            if i != favouritesArray[favouritesArray.count - 1] {
+                favourites += ","
+            }
+        }
+        
+        favouritesURL = "https://rickandmortyapi.com/api/character/\(favourites)"
+        print(favouritesURL)
+        setupFavouritesButton()
         setupSearchBar()
         setupTableView()
         
-        addButton()
         
         networkRequest(url: charURL)
+    }
+    
+    
+    func setupFavouritesButton() {
+        favouritesButton = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(isFavouritesButtonPressed))
+        navigationItem.rightBarButtonItem = favouritesButton
+        
+        
+    }
+    
+    @objc func isFavouritesButtonPressed() {
+        if isFavourite {
+            isFavourite = false
+            navigationItem.title = "Rick and Mortey"
+            networkRequest(url: charURL)
+        }
+        else {
+            isFavourite = true
+            navigationItem.title = "Избранное"
+            networkRequest(url: favouritesURL)
+        }
     }
     
     func setupSearchBar() {
@@ -35,8 +70,8 @@ class MainViewController: UIViewController, Storyboardable {
         navigationController?.navigationBar.prefersLargeTitles = true
         
         view.addSubview(tableView)
-        tableView.delegate = self
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
+        tableView.delegate = self
         tableView.dataSource = self
         updateLayout(with: view.frame.size)
     }
@@ -44,30 +79,7 @@ class MainViewController: UIViewController, Storyboardable {
     private func updateLayout(with size: CGSize) {
         tableView.frame = CGRect.init(origin: .zero, size: size)
     }
-    
-    private func addButton() {
-        let screenSize = UIScreen.main.bounds
-        let screenWidth = screenSize.width
         
-        let favouritesButton = UIButton(type: .system)
-        favouritesButton.setTitle("★", for: .normal)
-        favouritesButton.setTitleColor(.black, for: .normal)
-        favouritesButton.titleLabel?.font = UIFont.systemFont(ofSize: 32)
-        favouritesButton.backgroundColor = UIColor(red: 55/255, green: 220/255, blue: 100/255, alpha: 0.8)
-        favouritesButton.layer.borderWidth = 2
-        favouritesButton.layer.borderColor = UIColor(red: 20/255, green: 100/255, blue: 40/255, alpha: 1).cgColor
-        favouritesButton.layer.cornerRadius = screenWidth * 0.2 / 2
-        favouritesButton.layer.masksToBounds = true
-        favouritesButton.clipsToBounds = true
-        view.addSubview(favouritesButton)
-        favouritesButton.snp.makeConstraints { maker in
-            maker.left.equalToSuperview().inset(25)
-            maker.width.equalTo(screenWidth * 0.2)
-            maker.height.equalTo(screenWidth * 0.2)
-            maker.bottom.equalToSuperview().inset(25)
-        }
-    }
-    
     func networkRequest(url: String) {
         networkService.request(dataURL: url) { [weak self] (result) in
             switch result {

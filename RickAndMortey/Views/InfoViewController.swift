@@ -23,7 +23,6 @@ class InfoViewController: UIViewController, Storyboardable {
         gender = viewModel?.gender ?? ""
         image = viewModel?.image ?? ""
         
-        print(image)
         initializate()
     }
     

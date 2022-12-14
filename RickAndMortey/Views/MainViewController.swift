@@ -7,6 +7,7 @@ class MainViewController: UIViewController, Storyboardable {
     var viewModel: MainViewModel?
     var coordinator: AppCoordinator?
     var dataResponse: DataResponse? = nil
+    var timer: Timer?
     
     let charURL = "https://rickandmortyapi.com/api/character/"
     
@@ -20,7 +21,7 @@ class MainViewController: UIViewController, Storyboardable {
         
         addButton()
         
-        networkRequest()
+        networkRequest(url: charURL)
     }
     
     func setupSearchBar() {
@@ -67,8 +68,8 @@ class MainViewController: UIViewController, Storyboardable {
         }
     }
     
-    func networkRequest() {
-        networkService.request(dataURL: charURL) { [weak self] (result) in
+    func networkRequest(url: String) {
+        networkService.request(dataURL: url) { [weak self] (result) in
             switch result {
             case .success(let dataResponse):
                 dataResponse.results.map { (characterData) in
@@ -101,7 +102,6 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         {
             cell.imageView?.image = UIImage(data: data)
         }
-//        cell.imageView?.image = UIImage(data: data?.image)
         cell.accessoryType = .disclosureIndicator
         return cell
     }
@@ -127,18 +127,9 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 extension MainViewController : UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         let dataURL = "https://rickandmortyapi.com/api/character/?name=\(searchText)"
-        
-        // MARK: network
-        networkService.request(dataURL: dataURL) { [weak self] (result) in
-            switch result {
-            case .success(let dataResponse):
-                dataResponse.results.map { (characterData) in
-                    self?.dataResponse = dataResponse
-                    self?.tableView.reloadData()
-                }
-            case .failure(let error):
-                print("error:", error)
-            }
-        }
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
+            self.networkRequest(url: dataURL)
+        })
     }
 }

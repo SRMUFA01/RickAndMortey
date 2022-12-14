@@ -7,43 +7,49 @@ class MainViewController: UIViewController, Storyboardable {
     var viewModel: MainViewModel?
     var coordinator: AppCoordinator?
     var dataResponse: DataResponse? = nil
+    var charResponse: CharacterData? = nil
+    var favouriteCharacters = [CharacterData?]()
     var timer: Timer?
     var favouritesButton = UIBarButtonItem()
     
     let charURL = "https://rickandmortyapi.com/api/character/"
-    var favouritesURL = ""
+    
     let tableView = UITableView.init(frame: CGRect.zero, style: .grouped)
     
     var isFavourite = false
+    let favouritesArray = [621, 154, 124, 221, 12, 1]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let favouritesArray = [23, 12, 14]
-        var favourites = ""
-        for i in favouritesArray {
-            favourites += String(i)
-            if i != favouritesArray[favouritesArray.count - 1] {
-                favourites += ","
-            }
-        }
-        
-        favouritesURL = "https://rickandmortyapi.com/api/character/\(favourites)"
-        print(favouritesURL)
+
         setupFavouritesButton()
         setupSearchBar()
         setupTableView()
         
-        
+        makeRequest()
         networkRequest(url: charURL)
     }
-    
+                    
+    func makeRequest() {
+        
+        for i in 0..<(favouritesArray.count) {
+            if favouriteCharacters.count < favouritesArray.count {
+                var favouritesURL = "https://rickandmortyapi.com/api/character/\(favouritesArray[i])"
+                var request = URLRequest(url: URL(string: favouritesURL)!)
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    if let data = data, let charData = try? JSONDecoder().decode(CharacterData.self, from: data) {
+                        self.favouriteCharacters.append(charData)
+                    }
+                }
+                task.resume()
+            }
+        }
+        tableView.reloadData()
+    }
     
     func setupFavouritesButton() {
         favouritesButton = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(isFavouritesButtonPressed))
         navigationItem.rightBarButtonItem = favouritesButton
-        
-        
     }
     
     @objc func isFavouritesButtonPressed() {
@@ -55,7 +61,7 @@ class MainViewController: UIViewController, Storyboardable {
         else {
             isFavourite = true
             navigationItem.title = "Избранное"
-            networkRequest(url: favouritesURL)
+            makeRequest()
         }
     }
     
@@ -99,7 +105,13 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch tableView {
         case self.tableView:
-            return self.dataResponse?.results.count ?? 0
+            if isFavourite {
+                return self.favouriteCharacters.count
+            }
+            else {
+                return self.dataResponse?.results.count ?? 0
+            }
+            
         default:
             return 0
         }
@@ -107,13 +119,25 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
-        let data = dataResponse?.results[indexPath.row]
-        cell.textLabel?.text = data?.name
-        let url = URL(string: data?.image ?? "")
-        if let data = try? Data(contentsOf: url!)
-        {
-            cell.imageView?.image = UIImage(data: data)
+        if isFavourite {
+            let data = favouriteCharacters[indexPath.row]
+            cell.textLabel?.text = data?.name
+            let url = URL(string: data?.image ?? "")
+            if let data = try? Data(contentsOf: url!)
+            {
+                cell.imageView?.image = UIImage(data: data)
+            }
         }
+        else {
+            let data = dataResponse?.results[indexPath.row]
+            cell.textLabel?.text = data?.name
+            let url = URL(string: data?.image ?? "")
+            if let data = try? Data(contentsOf: url!)
+            {
+                cell.imageView?.image = UIImage(data: data)
+            }
+        }
+        
         cell.accessoryType = .disclosureIndicator
         return cell
     }

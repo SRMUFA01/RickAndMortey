@@ -57,8 +57,7 @@ class MainViewController: UIViewController, Storyboardable {
             isFavourite = false
             navigationItem.title = "Rick and Mortey"
             networkRequest(url: charURL)
-        }
-        else {
+        } else {
             isFavourite = true
             navigationItem.title = "Избранное"
             makeRequest()
@@ -107,8 +106,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         case self.tableView:
             if isFavourite {
                 return self.favouriteCharacters.count
-            }
-            else {
+            } else {
                 return self.dataResponse?.results.count ?? 0
             }
             
@@ -143,13 +141,31 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let data = dataResponse?.results[indexPath.row]
-        let id = data?.id
-        let name = data?.name
-        let status = data?.status
-        let species = data?.species
-        let gender = data?.gender
-        let image = data?.image
+        var id = Int()
+        var name = String()
+        var status =  String()
+        var species =  String()
+        var gender =  String()
+        var image =  String()
+        
+        if isFavourite {
+            let data = favouriteCharacters[indexPath.row]
+            id = data?.id ?? 0
+            name = data?.name ?? ""
+            status = data?.status ?? ""
+            species = data?.species ?? ""
+            gender = data?.gender ?? ""
+            image = data?.image ?? ""
+        } else {
+            let data = dataResponse?.results[indexPath.row]
+            id = data?.id ?? 0
+            name = data?.name ?? ""
+            status = data?.status ?? ""
+            species = data?.species ?? ""
+            gender = data?.gender ?? ""
+            image = data?.image ?? ""
+        }
+        
         coordinator?.id = viewModel?.id.value ?? 0
         coordinator?.name = viewModel?.name.value ?? ""
         coordinator?.status = viewModel?.status.value ?? ""

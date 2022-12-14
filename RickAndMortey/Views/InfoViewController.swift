@@ -1,5 +1,6 @@
 import UIKit
 import SnapKit
+import RealmSwift
 
 class InfoViewController: UIViewController, Storyboardable {
     
@@ -15,7 +16,7 @@ class InfoViewController: UIViewController, Storyboardable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        //var favouriteCharacters = [String]()
         id = viewModel?.id ?? 0
         name = viewModel?.name ?? ""
         status = viewModel?.status ?? ""

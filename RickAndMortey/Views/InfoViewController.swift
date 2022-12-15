@@ -16,7 +16,6 @@ class InfoViewController: UIViewController, Storyboardable {
     var image = ""
     
     let addToFavouritesButton = UIButton(type: .system)
-    var isFavourite = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -151,7 +150,6 @@ class InfoViewController: UIViewController, Storyboardable {
     
     // MARK: Действие при нажатии на кнопку "Добавить в избранное"
     @objc private func addToFavouritesButtonPressed() {
-        isFavourite = true
         let favouriteID = FavouriteCharacters(value: [String(id)])
         try! realm.write {
             realm.add([favouriteID])

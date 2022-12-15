@@ -25,11 +25,11 @@ class MainViewController: UIViewController, Storyboardable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateFavouritesArray()
         setupFavouritesButton()
         setupSearchBar()
         setupTableView()
-        favouriteCharactersRequest()
+        updateFavouritesArray()
+        
         allCharactersRequest(url: allCharactersURL)
     }
     
@@ -97,21 +97,6 @@ class MainViewController: UIViewController, Storyboardable {
         }
     }
     
-    // MARK: Запрос к списку всех персонажей
-    func allCharactersRequest(url: String) {
-        networkService.request(dataURL: url) { [weak self] (result) in
-            switch result {
-            case .success(let dataResponse):
-                dataResponse.results.map { (characterData) in
-                    self?.dataResponse = dataResponse
-                    self?.tableView.reloadData()
-                }
-            case .failure(_):
-                print("error:")
-            }
-        }
-    }
-    
     // MARK: Запрос к списку избранных персонажей
     func favouriteCharactersRequest() {
         updateFavouritesArray()
@@ -133,6 +118,21 @@ class MainViewController: UIViewController, Storyboardable {
             }
         }
         tableView.reloadData()
+    }
+    
+    // MARK: Запрос к списку всех персонажей
+    func allCharactersRequest(url: String) {
+        networkService.request(dataURL: url) { [weak self] (result) in
+            switch result {
+            case .success(let dataResponse):
+                dataResponse.results.map { (characterData) in
+                    self?.dataResponse = dataResponse
+                    self?.tableView.reloadData()
+                }
+            case .failure(_):
+                print("error:")
+            }
+        }
     }
 }
 

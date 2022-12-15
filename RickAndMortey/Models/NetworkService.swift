@@ -1,5 +1,7 @@
 import Foundation
 
+// MARK: Запрос к списку всех персонажей
+
 class NetworkService {
     func request(dataURL: String, completion: @escaping (Result<DataResponse, Error>) -> Void) {
         guard let url = URL(string: dataURL) else { return }

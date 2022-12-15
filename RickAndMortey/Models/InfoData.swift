@@ -1,5 +1,7 @@
 import Foundation
 
+// MARK: Данные, получаемые из API
+
 struct DataResponse: Decodable {
     var results: [CharacterData]
 }

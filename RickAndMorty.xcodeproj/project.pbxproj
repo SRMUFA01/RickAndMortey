@@ -345,7 +345,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 041D7C9B294714580036DDC6 /* Build configuration list for PBXProject "RickAndMortey" */;
+			buildConfigurationList = 041D7C9B294714580036DDC6 /* Build configuration list for PBXProject "RickAndMorty" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -825,7 +825,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		041D7C9B294714580036DDC6 /* Build configuration list for PBXProject "RickAndMortey" */ = {
+		041D7C9B294714580036DDC6 /* Build configuration list for PBXProject "RickAndMorty" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				041D7CC82947145E0036DDC6 /* Debug */,

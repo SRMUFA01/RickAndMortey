@@ -20,6 +20,7 @@ class InfoViewController: UIViewController, Storyboardable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         id = viewModel?.id ?? 0
         name = viewModel?.name ?? ""
         status = viewModel?.status ?? ""
@@ -30,6 +31,7 @@ class InfoViewController: UIViewController, Storyboardable {
         initializate()
     }
     
+    // MARK: Инициализация интерфейса
     func initializate() {
         let screenSize = UIScreen.main.bounds
         let screenWidth = screenSize.width
@@ -147,6 +149,7 @@ class InfoViewController: UIViewController, Storyboardable {
         addToFavouritesButton.addTarget(self, action: #selector(addToFavouritesButtonPressed), for: .touchUpInside)
     }
     
+    // MARK: Действие при нажатии на кнопку "Добавить в избранное"
     @objc private func addToFavouritesButtonPressed() {
         isFavourite = true
         let favouriteID = FavouriteCharacters(value: [String(id)])

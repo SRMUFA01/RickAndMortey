@@ -14,10 +14,7 @@ class AppCoordinator : Coordinator {
         self.navigationController = navigationController
     }
     
-    func start() {
-        showMain()
-    }
-    
+    // MARK: Открытие основного окна
     func showMain() {
         let vc = MainViewController.createObject()
         let viewModel = MainViewModel()
@@ -26,6 +23,7 @@ class AppCoordinator : Coordinator {
         navigationController.pushViewController(vc, animated: true)
     }
     
+    // MARK: Открытие информации о персонаже
     func showInfo(id: Int, name: String, status: String, species: String, gender: String, image: String) {
         let vc = InfoViewController.createObject()
         let viewModel = InfoViewModel()
